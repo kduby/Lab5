@@ -1,7 +1,8 @@
 # CSE110 SP21 Lab 5
 
 ## Author(s):
-- YOUR NAME
+- Simon Liu
+- Kevin Wong
 
 ## Part 1:
 
