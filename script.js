@@ -2,15 +2,64 @@
 
 const img = new Image(); // used to load image from <input> and draw to canvas
 
+const canvas = document.getElementById('user-image');
 // Fires whenever the img object loads a new image (such as with img.src =)
 img.addEventListener('load', () => {
   // TODO
+  
+  
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+/*
+  var clicked = false;
+  var autographer
 
+  ctx.fillStyle = 'black';*/
   // Some helpful tips:
   // - Fill the whole Canvas with black first to add borders on non-square images, then draw on top
   // - Clear the form when a new image is selected
   // - If you draw the image to canvas here, it will update as soon as a new image is selected
 });
+ 
+/*
+input.addEventListener('change', () => {
+  .alt
+})*/
+
+const generate = document.getElementById("generate-meme");
+const top = document.getElementById("text-top");
+const bottom = document.getElementById("text-bottom");
+
+//draw helper function 
+/*
+function draw {
+  
+}*/
+
+var ctx = canvas.getContext("2d");
+
+generate.addEventListener('submit', (event) => {
+  event.preventDefault();
+  ctx.font = "30px Arial";
+  ctx.fillText(top.value, 10 ,50);
+  ctx.fillText(bottom.value, 40, 50);
+  
+})
+
+//const clear = document.querySelector('#button-group button:nth-child(1)'); //button[type='whatever']
+const clear = document.querySelector('#button-group');
+
+button.addEventListener('click', (event) => {
+  event.preventDefault();
+  console.log(clear[0]);
+  
+
+})
+
+
+
+
+
 
 /**
  * Takes in the dimensions of the canvas and the new image, then calculates the new
