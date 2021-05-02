@@ -4,12 +4,18 @@ const img = new Image(); // used to load image from <input> and draw to canvas
 
 const canvas = document.getElementById('user-image');
 // Fires whenever the img object loads a new image (such as with img.src =)
+img.src = //input type file
 img.addEventListener('load', () => {
   // TODO
   
-  
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  clear.disabled = true;
+  readText.disabled = true;
+  generate.disabled = false;
+
+   ctx.fillStyle = 'black';
 /*
   var clicked = false;
   var autographer
@@ -26,34 +32,96 @@ input.addEventListener('change', () => {
   .alt
 })*/
 
-const generate = document.getElementById("generate-meme");
-const top = document.getElementById("text-top");
-const bottom = document.getElementById("text-bottom");
+//Form
+const genForm = document.getElementById('generate-meme');
+//Top text input
+const top = document.getElementById('text-top');
+//Bottom text input
+const bottom = document.getElementById('text-bottom');
+//clear button
+const clear = document.querySelector('button[type="reset"]');
+//read text button
+const readText = document.querySelector('button[type="button"]');
+//generate button
+const generate = document.querySelector('button[type="submit"]');
+//voice list
+const voiceSelect = document.getElementById('voice-selection');
 
-//draw helper function 
+var ctx = canvas.getContext('2d');
+voiceSelect.disabled = false;
 /*
-function draw {
+var VL = {
   
-}*/
+}
 
-var ctx = canvas.getContext("2d");
+VL.populateVoiceList();
+VL.populateVoiceList();
+VL.populateVoiceList();
+VL.populateVoiceList();
+*/
 
-generate.addEventListener('submit', (event) => {
+genForm.addEventListener('submit', (event) => {
   event.preventDefault();
-  ctx.font = "30px Arial";
-  ctx.fillText(top.value, 10 ,50);
-  ctx.fillText(bottom.value, 40, 50);
+  ctx.font = '30px Arial';
   
+  //position
+
+  ctx.textAlign = 'center';
+  ctx.fillText(top.value, canvas.width/2, 40);
+  ctx.fillText(bottom.value, canvas.width/2, canvas.height - 10);
+  console.log(ctx);
+
+  //toggle buttons
+  clear.disabled = false;
+  readText.disabled = false;
+  generate.disabled = true;
+  
+
 })
 
-//const clear = document.querySelector('#button-group button:nth-child(1)'); //button[type='whatever']
-const clear = document.querySelector('#button-group');
+// set attribute
 
-button.addEventListener('click', (event) => {
+
+
+clear.addEventListener('click', (event) => {
   event.preventDefault();
-  console.log(clear[0]);
-  
+  //delete text & image
+  ctx.clearRect(0,0, canvas.width, canvas.height);
+  //ctx.fillText("",0,0);
+  console.log(ctx);
+  clear.disabled = true;
+  readText.disabled = true;
+  generate.disabled = false;
+})
 
+
+
+//list = "hi";
+//button:read text
+//const list = document.querySelector('option[value="none"]');
+readText.addEventListener('click', (event) => {
+
+    var voices = speechSynthesis.getVoices();
+    
+    for(var i = 0; i < voices.length; i++) {
+      var option = document.createElement('option');
+      option.textContent = voices[i].name + ' (' + voices[i].lang + ')';
+      
+      if(voices[i].default) {
+        option.textContent += ' -- DEFAULT';
+      }
+  
+      option.setAttribute('data-lang', voices[i].lang);
+      option.setAttribute('data-name', voices[i].name);
+      voiceSelect.appendChild(option);
+  
+    }
+  
+  
+  console.log(option);
+  //console.log(option);
+  //console.log(list);
+  var utterThis = new SpeechSynthesisUtterance();
 })
 
 
