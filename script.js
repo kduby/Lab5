@@ -1,10 +1,18 @@
 // script.js
 
 const img = new Image(); // used to load image from <input> and draw to canvas
+//Form
+const genForm = document.getElementById('generate-meme');
+
+const imgInput = document.getElementById('image-input');
 
 const canvas = document.getElementById('user-image');
+//Canvas
+var ctx = canvas.getContext('2d');
+
+
 // Fires whenever the img object loads a new image (such as with img.src =)
-img.src = //input type file
+
 img.addEventListener('load', () => {
   // TODO
   
@@ -15,7 +23,9 @@ img.addEventListener('load', () => {
   readText.disabled = true;
   generate.disabled = false;
 
-   ctx.fillStyle = 'black';
+  ctx.fillStyle = 'black';
+  img.src = document.querySelector('canvas[alt]');
+  console.log(canvas);
 /*
   var clicked = false;
   var autographer
@@ -25,15 +35,31 @@ img.addEventListener('load', () => {
   // - Fill the whole Canvas with black first to add borders on non-square images, then draw on top
   // - Clear the form when a new image is selected
   // - If you draw the image to canvas here, it will update as soon as a new image is selected
-});
- 
-/*
-input.addEventListener('change', () => {
-  .alt
-})*/
+})
 
-//Form
-const genForm = document.getElementById('generate-meme');
+
+ 
+
+imgInput.addEventListener('change', () => {
+  //img.onload = draw;
+  //img.onerror = failed;
+  img.src = URL.createObjectURL(imgInput.files[0]);
+  img.alt = imgInput.files[0].name;
+  canvas.alt = imgInput.files[0].name;
+})
+
+function draw() {
+  canvas.width = this.width;
+  canvas.height = this.height;
+  ctx.drawImage(this, 0, 0);
+}
+
+function failed() {
+  console.error("The provided file couldn't be loaded as an Image media");
+}
+
+
+
 //Top text input
 const top = document.getElementById('text-top');
 //Bottom text input
@@ -47,18 +73,9 @@ const generate = document.querySelector('button[type="submit"]');
 //voice list
 const voiceSelect = document.getElementById('voice-selection');
 
-var ctx = canvas.getContext('2d');
+//Enable voice list
 voiceSelect.disabled = false;
-/*
-var VL = {
-  
-}
 
-VL.populateVoiceList();
-VL.populateVoiceList();
-VL.populateVoiceList();
-VL.populateVoiceList();
-*/
 
 genForm.addEventListener('submit', (event) => {
   event.preventDefault();
@@ -79,9 +96,6 @@ genForm.addEventListener('submit', (event) => {
 
 })
 
-// set attribute
-
-
 
 clear.addEventListener('click', (event) => {
   event.preventDefault();
@@ -94,15 +108,12 @@ clear.addEventListener('click', (event) => {
   generate.disabled = false;
 })
 
-
-
-//list = "hi";
-//button:read text
-//const list = document.querySelector('option[value="none"]');
-readText.addEventListener('click', (event) => {
-
-    var voices = speechSynthesis.getVoices();
-    
+//SpeechSynthesis
+var synth = speechSynthesis;
+var voices = [];
+function populateVoiceList() {
+    voices = synth.getVoices();
+    voiceSelect.remove(0);
     for(var i = 0; i < voices.length; i++) {
       var option = document.createElement('option');
       option.textContent = voices[i].name + ' (' + voices[i].lang + ')';
@@ -116,14 +127,56 @@ readText.addEventListener('click', (event) => {
       voiceSelect.appendChild(option);
   
     }
+}
+populateVoiceList();
+if (speechSynthesis.onvoiceschanged !== undefined) {
+  speechSynthesis.onvoiceschanged = populateVoiceList;
+}
+
+/*var pitch = document.querySelector('#pitch');
+var pitchValue = document.querySelector('.pitch-value');
+var rate = document.querySelector('#rate');
+var rateValue = document.querySelector('.rate-value');
+*/
+
+
+//button:read text
+readText.addEventListener('click', (event) => {
+  event.preventDefault();
+  var utterThis = new SpeechSynthesisUtterance(top.value + ' ' + bottom.value);
   
+  var selectedOption = voiceSelect.selectedOptions[0].getAttribute('data-name');
+  for (var i = 0; i < voices.length; i++) {
+    if(voices[i].name == selectedOption) {
+      utterThis.voice = voices[i];
+    }
+  }
+  //utterThis.pitch = pitch.value;
+  //utterThis.rate = rate.value;
+  utterThis.volume = input.value/100;
+  synth.speak(utterThis);
   
-  console.log(option);
-  //console.log(option);
-  //console.log(list);
-  var utterThis = new SpeechSynthesisUtterance();
 })
 
+//Volume Slider
+const input = document.querySelector('#volume-group > input[type="range"]');
+const soundSrc = document.querySelector('#volume-group > img');
+
+input.addEventListener('input', () =>  {
+  //Volume icons
+    if ( input.value >= 67) {
+      soundSrc.src = "icons/volume-level-3.svg"
+    }
+    else if ( input.value >=34) {
+      soundSrc.src = "icons/volume-level-2.svg"
+    }
+    else if ( input.value >= 1) {
+      soundSrc.src = "icons/volume-level-1.svg"
+    }
+    else {
+      soundSrc.src = "icons/volume-level-0.svg"
+    }
+})
 
 
 
