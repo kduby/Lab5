@@ -1,76 +1,15 @@
 // script.js
+//Simon Liu and Kevin Wong's Meme Generator - Lab 5
 
 const img = new Image(); // used to load image from <input> and draw to canvas
 //Form
 const genForm = document.getElementById('generate-meme');
-
+//input for the image
 const imgInput = document.getElementById('image-input');
-
+//canvas we are drawing on
 const canvas = document.getElementById('user-image');
 //Canvas
 var ctx = canvas.getContext('2d');
-
-
-// Fires whenever the img object loads a new image (such as with img.src =)
-
-img.addEventListener('load', () => {
-  
-  //const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  /*clear.disabled = true;
-  readText.disabled = true;
-  generate.disabled = false;*/
-
-  if (img.width != img.height) {
-    ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-  }
-
-  let dimensions = getDimmensions(canvas.width, canvas.height, img.width, img.height);
-
-  ctx.drawImage(img, dimensions['startX'], dimensions['startY'], dimensions['width'], dimensions['height']);
-
-  /*
-  ctx.fillStyle = 'black';
-  img.src = document.querySelector('canvas[alt]');
-  console.log(canvas);
-  */
-
-/*
-  var clicked = false;
-  var autographer
-
-  ctx.fillStyle = 'black';*/
-  // Some helpful tips:
-  // - Fill the whole Canvas with black first to add borders on non-square images, then draw on top
-  // - Clear the form when a new image is selected
-  // - If you draw the image to canvas here, it will update as soon as a new image is selected
-})
-
-
- 
-
-imgInput.addEventListener('change', () => {
-  //img.onload = draw;
-  //img.onerror = failed;
-  img.src = URL.createObjectURL(imgInput.files[0]);
-  img.alt = imgInput.files[0].name;
-  canvas.alt = imgInput.files[0].name;
-})
-
-function draw() {
-  canvas.width = this.width;
-  canvas.height = this.height;
-  ctx.drawImage(this, 0, 0);
-}
-
-function failed() {
-  console.error("The provided file couldn't be loaded as an Image media");
-}
-
-
-
 //Top text input
 const top = document.getElementById('text-top');
 //Bottom text input
@@ -83,21 +22,61 @@ const readText = document.querySelector('button[type="button"]');
 const generate = document.querySelector('button[type="submit"]');
 //voice list
 const voiceSelect = document.getElementById('voice-selection');
-
+//Volume Slider
+const input = document.querySelector('#volume-group > input[type="range"]');
+//volume icon
+const soundSrc = document.querySelector('#volume-group > img');
 //Enable voice list
 voiceSelect.disabled = false;
 
 
+// Fires whenever the img object loads a new image (such as with img.src =)
+
+img.addEventListener('load', () => {
+  
+  //const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  clear.disabled = true;
+  readText.disabled = true;
+  generate.disabled = false;
+
+  if (img.width != img.height) {
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+
+  let dimensions = getDimmensions(canvas.width, canvas.height, img.width, img.height);
+
+  ctx.drawImage(img, dimensions['startX'], dimensions['startY'], dimensions['width'], dimensions['height']);
+
+  // Some helpful tips:
+  // - Fill the whole Canvas with black first to add borders on non-square images, then draw on top
+  // - Clear the form when a new image is selected
+  // - If you draw the image to canvas here, it will update as soon as a new image is selected
+})
+
+
+ 
+//Change image source
+imgInput.addEventListener('change', () => {
+
+  img.src = URL.createObjectURL(imgInput.files[0]);
+  img.alt = imgInput.files[0].name;
+  canvas.alt = imgInput.files[0].name;
+})
+
+
+//Grab text and generate onto the canvas
 genForm.addEventListener('submit', (event) => {
   event.preventDefault();
   ctx.font = '30px Arial';
   
-  //position
-
+  //position and color of text
+  ctx.fillStyle = 'white';
   ctx.textAlign = 'center';
   ctx.fillText(top.value, canvas.width/2, 40);
-  ctx.fillText(bottom.value, canvas.width/2, canvas.height - 10);
-  console.log(ctx);
+  ctx.fillText(bottom.value, canvas.width/2, canvas.height - 20);
 
   //toggle buttons
   clear.disabled = false;
@@ -107,19 +86,18 @@ genForm.addEventListener('submit', (event) => {
 
 })
 
-
+//Clear any image or text present
 clear.addEventListener('click', (event) => {
   event.preventDefault();
-  //delete text & image
   ctx.clearRect(0,0, canvas.width, canvas.height);
-  //ctx.fillText("",0,0);
-  console.log(ctx);
+
+  //toggle buttons
   clear.disabled = true;
   readText.disabled = true;
   generate.disabled = false;
 })
 
-//SpeechSynthesis
+//Setting up speech synthesis
 var synth = speechSynthesis;
 var voices = [];
 function populateVoiceList() {
@@ -144,13 +122,6 @@ if (speechSynthesis.onvoiceschanged !== undefined) {
   speechSynthesis.onvoiceschanged = populateVoiceList;
 }
 
-/*var pitch = document.querySelector('#pitch');
-var pitchValue = document.querySelector('.pitch-value');
-var rate = document.querySelector('#rate');
-var rateValue = document.querySelector('.rate-value');
-*/
-
-
 //button:read text
 readText.addEventListener('click', (event) => {
   event.preventDefault();
@@ -162,30 +133,29 @@ readText.addEventListener('click', (event) => {
       utterThis.voice = voices[i];
     }
   }
-  //utterThis.pitch = pitch.value;
-  //utterThis.rate = rate.value;
   utterThis.volume = input.value/100;
   synth.speak(utterThis);
   
 })
 
-//Volume Slider
-const input = document.querySelector('#volume-group > input[type="range"]');
-const soundSrc = document.querySelector('#volume-group > img');
-
+//Changing volume icons according to volume respectively
 input.addEventListener('input', () =>  {
   //Volume icons
     if ( input.value >= 67) {
       soundSrc.src = "icons/volume-level-3.svg"
+      soundSrc.alt = "Volume Level 3"
     }
     else if ( input.value >=34) {
       soundSrc.src = "icons/volume-level-2.svg"
+      soundSrc.alt = "Volume Level 2"
     }
     else if ( input.value >= 1) {
       soundSrc.src = "icons/volume-level-1.svg"
+      soundSrc.alt = "Volume Level 1"
     }
     else {
       soundSrc.src = "icons/volume-level-0.svg"
+      soundSrc.alt = "Volume Level 0"
     }
 })
 
