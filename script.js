@@ -14,18 +14,29 @@ var ctx = canvas.getContext('2d');
 // Fires whenever the img object loads a new image (such as with img.src =)
 
 img.addEventListener('load', () => {
-  // TODO
   
-  const ctx = canvas.getContext('2d');
+  //const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  clear.disabled = true;
+  /*clear.disabled = true;
   readText.disabled = true;
-  generate.disabled = false;
+  generate.disabled = false;*/
 
+  if (img.width != img.height) {
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+
+  let dimensions = getDimmensions(canvas.width, canvas.height, img.width, img.height);
+
+  ctx.drawImage(img, dimensions['startX'], dimensions['startY'], dimensions['width'], dimensions['height']);
+
+  /*
   ctx.fillStyle = 'black';
   img.src = document.querySelector('canvas[alt]');
   console.log(canvas);
+  */
+
 /*
   var clicked = false;
   var autographer
