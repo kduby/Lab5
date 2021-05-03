@@ -70,14 +70,17 @@ imgInput.addEventListener('change', () => {
 //Grab text and generate onto the canvas
 genForm.addEventListener('submit', (event) => {
   event.preventDefault();
-  ctx.font = '30px Arial';
+  ctx.font = 'bold 40px Arial';
   
   //position and color of text
   ctx.fillStyle = 'white';
   ctx.textAlign = 'center';
   ctx.fillText(top.value, canvas.width/2, 40);
   ctx.fillText(bottom.value, canvas.width/2, canvas.height - 20);
-
+  console.log(ctx);
+  ctx.strokeText(top.value, canvas.width/2, 40);
+  ctx.strokeText(bottom.value, canvas.width/2, canvas.height - 20);
+  
   //toggle buttons
   clear.disabled = false;
   readText.disabled = false;
